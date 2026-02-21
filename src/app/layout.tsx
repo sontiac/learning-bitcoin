@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 const geist = Geist({
@@ -51,7 +52,7 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${playfair.variable} font-sans antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

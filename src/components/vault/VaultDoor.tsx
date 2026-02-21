@@ -1,14 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Text, Ring } from "@react-three/drei";
+import { Text, Ring, Html } from "@react-three/drei";
 import * as THREE from "three";
+import { useDifficulty, DIFFICULTIES } from "@/lib/difficulty";
 
 export default function VaultDoor() {
   const coinGroupRef = useRef<THREE.Group>(null);
   const outerRingRef = useRef<THREE.Mesh>(null);
   const innerRingRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  const { difficulty, cycle, label, tagline } = useDifficulty();
+
+  const diffIndex = DIFFICULTIES.findIndex((d) => d.key === difficulty);
 
   useFrame((_, delta) => {
     if (coinGroupRef.current) {
@@ -25,7 +30,7 @@ export default function VaultDoor() {
   return (
     <group position={[0, 0.8, -10]}>
       {/* Back wall */}
-      <mesh position={[0, 0, -1]}>
+      <mesh position={[0, 0, -3]}>
         <planeGeometry args={[10, 10]} />
         <meshStandardMaterial color="#06060a" />
       </mesh>
@@ -38,6 +43,7 @@ export default function VaultDoor() {
           emissiveIntensity={0.2}
           metalness={0.95}
           roughness={0.15}
+          side={THREE.DoubleSide}
         />
       </Ring>
 
@@ -49,26 +55,42 @@ export default function VaultDoor() {
           emissiveIntensity={0.15}
           metalness={0.9}
           roughness={0.2}
+          side={THREE.DoubleSide}
         />
       </Ring>
 
-      {/* The Bitcoin Coin — rotating on Y axis */}
+      {/* The Bitcoin Coin — clickable difficulty selector */}
       <group ref={coinGroupRef}>
-        {/* Coin disc — cylinder rotated so flat faces point along Z */}
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <mesh
+          rotation={[Math.PI / 2, 0, 0]}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            setHovered(true);
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            setHovered(false);
+            document.body.style.cursor = "auto";
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            cycle();
+          }}
+        >
           <cylinderGeometry args={[1.7, 1.7, 0.12, 64]} />
           <meshStandardMaterial
             color="#D4A843"
             emissive="#F5C542"
-            emissiveIntensity={0.1}
+            emissiveIntensity={hovered ? 0.3 : 0.1}
             metalness={0.95}
             roughness={0.1}
+            side={THREE.DoubleSide}
           />
         </mesh>
 
         {/* ₿ symbol — front face */}
         <Text
-          position={[0, 0, 0.065]}
+          position={[0, 0, 0.07]}
           fontSize={2}
           anchorX="center"
           anchorY="middle"
@@ -80,12 +102,13 @@ export default function VaultDoor() {
             emissiveIntensity={0.5}
             metalness={0.9}
             roughness={0.15}
+            side={THREE.DoubleSide}
           />
         </Text>
 
         {/* ₿ symbol — back face */}
         <Text
-          position={[0, 0, -0.065]}
+          position={[0, 0, -0.07]}
           fontSize={2}
           rotation={[0, Math.PI, 0]}
           anchorX="center"
@@ -98,6 +121,7 @@ export default function VaultDoor() {
             emissiveIntensity={0.5}
             metalness={0.9}
             roughness={0.15}
+            side={THREE.DoubleSide}
           />
         </Text>
 
@@ -110,9 +134,49 @@ export default function VaultDoor() {
             emissiveIntensity={0.1}
             metalness={0.9}
             roughness={0.2}
+            side={THREE.DoubleSide}
           />
         </mesh>
       </group>
+
+      {/* Difficulty label — always visible below the coin */}
+      <Html center style={{ pointerEvents: "none" }} position={[0, -2.8, 0]}>
+        <div style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+          {/* Level dots */}
+          <div style={{ display: "flex", gap: "6px", justifyContent: "center", marginBottom: "6px" }}>
+            {DIFFICULTIES.map((d, i) => (
+              <div
+                key={d.key}
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: i <= diffIndex ? "#F5C542" : "rgba(212,168,67,0.2)",
+                  transition: "background 0.3s ease",
+                }}
+              />
+            ))}
+          </div>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #F5C542, #D4A843)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontFamily: "var(--font-playfair), serif",
+              fontSize: "18px",
+              fontWeight: 600,
+            }}
+          >
+            {label}
+          </div>
+          <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginTop: "2px" }}>
+            {tagline}
+          </div>
+          <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)", marginTop: "6px" }}>
+            Click the coin to change
+          </div>
+        </div>
+      </Html>
 
       {/* Decorative spokes around the frame rings */}
       {Array.from({ length: 12 }).map((_, i) => {
@@ -136,7 +200,7 @@ export default function VaultDoor() {
         );
       })}
 
-      {/* Spotlight on the coin from above */}
+      {/* Spotlight on the coin */}
       <spotLight
         position={[0, 4, 2]}
         angle={0.4}
