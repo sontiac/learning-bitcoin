@@ -6,7 +6,7 @@ import * as THREE from "three";
 function Pillar({ position }: { position: [number, number, number] }) {
   const marbleTexture = useTexture("/marblesquare.png");
   marbleTexture.wrapS = marbleTexture.wrapT = THREE.RepeatWrapping;
-  marbleTexture.repeat.set(1, 3);
+  marbleTexture.repeat.set(0.8, 1);
 
   return (
     <group position={position}>
@@ -165,6 +165,29 @@ function PillarCircuits({
   );
 }
 
+function Floor() {
+  const marbleTexture = useTexture("/marblesquare.png");
+  marbleTexture.wrapS = marbleTexture.wrapT = THREE.RepeatWrapping;
+  marbleTexture.repeat.set(3, 4);
+
+  return (
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -3.71, -4]}
+      receiveShadow
+    >
+      <planeGeometry args={[12, 18]} />
+      <meshStandardMaterial
+        map={marbleTexture}
+        color="#888899"
+        roughness={0.08}
+        metalness={0.85}
+        envMapIntensity={3}
+      />
+    </mesh>
+  );
+}
+
 export default function Pillars() {
   const pillarPositions: {
     pos: [number, number, number];
@@ -187,19 +210,8 @@ export default function Pillars() {
         </group>
       ))}
 
-      {/* Floor — reflective dark surface */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -3.5, -4]}
-        receiveShadow
-      >
-        <planeGeometry args={[12, 18]} />
-        <meshStandardMaterial
-          color="#0c0c14"
-          roughness={0.2}
-          metalness={0.5}
-        />
-      </mesh>
+      {/* Floor — sits below pillar bases at Y=-3.7 */}
+      <Floor />
 
       {/* Ceiling */}
       <mesh

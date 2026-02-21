@@ -5,10 +5,17 @@ import { Environment } from "@react-three/drei";
 export default function VaultEnvironment() {
   return (
     <>
-      {/* Very dim ambient — let the spots do the work */}
-      <ambientLight intensity={0.04} color="#1a1a2e" />
+      {/* Ambient — warm base so nothing is pure black */}
+      <ambientLight intensity={0.1} color="#D4A843" />
 
-      {/* Primary amber spotlights — dramatic downward cones like the mockup */}
+      {/* Front fill — illuminates pillar faces and shapes facing the camera */}
+      <directionalLight
+        position={[0, 3, 6]}
+        intensity={0.7}
+        color="#F5E6C8"
+      />
+
+      {/* Primary amber spotlights — dramatic downward cones */}
       <spotLight
         position={[-3, 6, 0]}
         angle={0.6}
@@ -40,17 +47,17 @@ export default function VaultEnvironment() {
         castShadow
       />
 
-      {/* Backlight from vault door area — silhouette effect */}
-      <pointLight position={[0, 2, -9]} intensity={1.5} color="#F5C542" distance={12} decay={2} />
+      {/* Backlight from vault door area */}
+      <pointLight position={[0, 2, -9]} intensity={2} color="#F5C542" distance={14} decay={2} />
 
-      {/* Subtle fill from behind camera */}
-      <pointLight position={[0, 2, 5]} intensity={0.2} color="#D4A843" />
+      {/* Fill from behind camera */}
+      <pointLight position={[0, 2, 5]} intensity={0.6} color="#D4A843" />
 
-      {/* Environment map for metallic reflections */}
-      <Environment preset="night" />
+      {/* Environment map — warehouse has more reflections for gold to catch */}
+      <Environment preset="warehouse" />
 
-      {/* Fog for depth — closer start for more atmosphere */}
-      <fog attach="fog" args={["#0a0a0f", 3, 16]} />
+      {/* Fog — pushed back a bit so foreground stays visible */}
+      <fog attach="fog" args={["#0a0a0f", 5, 18]} />
     </>
   );
 }

@@ -80,19 +80,19 @@ export default function FloatingShape({ chapter }: { chapter: Chapter }) {
       {hovered && (
         <Html
           center
-          distanceFactor={6}
           style={{ pointerEvents: "none" }}
-          position={[0, 0.9, 0]}
+          position={[0, 1.1, 0]}
         >
           <div
             style={{
-              background: "rgba(10, 10, 15, 0.9)",
-              border: "1px solid rgba(212, 168, 67, 0.4)",
-              borderRadius: "8px",
-              padding: "10px 16px",
-              backdropFilter: "blur(8px)",
+              background: "rgba(10, 10, 15, 0.92)",
+              border: "1px solid rgba(212, 168, 67, 0.5)",
+              borderRadius: "10px",
+              padding: "14px 22px",
+              backdropFilter: "blur(12px)",
               whiteSpace: "nowrap",
               textAlign: "center",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.5), 0 0 12px rgba(212,168,67,0.15)",
             }}
           >
             <div
@@ -101,14 +101,14 @@ export default function FloatingShape({ chapter }: { chapter: Chapter }) {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontFamily: "var(--font-playfair), serif",
-                fontSize: "16px",
+                fontSize: "20px",
                 fontWeight: 600,
-                marginBottom: "2px",
+                marginBottom: "4px",
               }}
             >
               {chapter.title}
             </div>
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
+            <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.55)" }}>
               {chapter.tagline}
             </div>
           </div>

@@ -122,13 +122,15 @@ export default function VaultScene() {
   }
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen" style={{
+      background: "radial-gradient(ellipse at 50% 40%, #1a1520 0%, #0f0e14 40%, #0a0a0f 100%)",
+    }}>
       <Suspense fallback={<LoadingScreen />}>
         <Canvas
           camera={{ position: [0, 1.5, 4], fov: 55, near: 0.1, far: 30 }}
           shadows
-          gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-          style={{ background: "#0a0a0f" }}
+          gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, alpha: true }}
+          style={{ background: "transparent" }}
         >
           <Scene />
         </Canvas>
